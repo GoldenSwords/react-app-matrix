@@ -1,0 +1,30 @@
+@import "../../Style/globe.scss";
+
+.common-tree-node {
+  position: relative;
+  width: 100%;
+  height: fit-content;
+
+  .node-title,
+  .node-area {
+    position: relative;
+    align-items: center;
+    height: $padding-left-32;
+    display: flex;
+  }
+
+  .node-area {
+    width: 100%;
+    top: 0;
+    left: 0;
+
+    &.highlight {
+      background-color: rgba($color: #fff, $alpha: 0.1);
+    }
+
+    &.active {
+      background-color: rgba($color: #fff, $alpha: 0.2);
+    }
+
+  }
+}

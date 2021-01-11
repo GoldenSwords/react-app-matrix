@@ -30,6 +30,8 @@ module.exports = {
     alias: {
       src: path.resolve(__dirname, './src'),
       '@': path.resolve(__dirname, './src'),
+      'gifModule': path.resolve(__dirname, 'node_modules/gif.js/dist'),
+      
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },

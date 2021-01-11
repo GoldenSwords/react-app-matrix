@@ -9,7 +9,6 @@ const App:React.FC<IAppProps> = (props)=> {
   return (
     <div className="App">
       <div className={classnames('transformBox', { animation })} onClick={() => setAnimation(!animation)}></div>
-      <canvas/>
     </div>
   );
 }

@@ -1,12 +1,12 @@
 // 生产环境的 webpack 配置
 
 const path = require('path');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   mode: 'production',
   output: {
     filename: '[name].[contenthash].js',
-    publicPath: '/assets/',
+    publicPath: '/',
     chunkFilename: '[name].[contenthash].js',
   },
   resolve: {
@@ -16,34 +16,14 @@ module.exports = {
     ],
     alias: {
       src: path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src'),
+      'gifModule': path.resolve(__dirname, 'node_modules/gif.js/dist'),
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   plugins: [],
   module: {
     rules: [
-      {
-        test: /\.worker\.ts$/, // 以.worker.ts结尾的文件将被worker-loader加载
-        use: [
-          {
-            loader: 'worker-loader',
-            options: {
-              name: 'worker.[hash].js',
-              publicPath: '/assets/',
-            },
-          },
-          {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true,
-            },
-          },
-        ],
-      },
-      {
-        test: /\.scss$/,
-        use: ['css-loader', 'postcss-loader', 'sass-loader'],
-      },
       {
         enforce: 'pre',
         test: /\.js$/,
@@ -75,6 +55,18 @@ module.exports = {
         test: /\.(png|svg|jpg|jpeg|gif|ico|cur|woff|woff2|eot|ttf|otf)$/,
         use: [
           'file-loader',
+        ],
+      },
+      {
+        test: /\.worker\.ts$/, // 以.worker.ts结尾的文件将被worker-loader加载
+        use: [
+          'worker-loader',
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true,
+            },
+          },
         ],
       },
       {
@@ -122,4 +114,10 @@ module.exports = {
       chunks: 'all',
     },
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, './src/index.html'),
+      title: 'Demo',
+    }),
+  ]
 };

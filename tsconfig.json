@@ -9,11 +9,11 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "commonjs",
-    "target": "es2015",
+    "target": "ES6",
     "removeComments": true,
     "skipLibCheck": true,
     "allowJs": true,
-    "lib": ["es2015", "es2017", "dom"],
+    "lib": ["ES6", "DOM"],
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
