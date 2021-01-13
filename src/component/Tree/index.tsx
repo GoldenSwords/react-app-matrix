@@ -6,8 +6,9 @@ import './index.scss';
 
 interface IProps {
   data: treeNode[];
-  selectNode?: treeNode;
-  selectNodes?: treeNode[];
+  selectNode?: string;
+  selectNodes?: string[];
+  checkNodes?: string[];
   level?: number;
   showCheckbox?: boolean;
   highlightIds?: string[];
@@ -16,12 +17,13 @@ interface IProps {
 }
 
 const Tree: React.FC<IProps> = (props: IProps) => {
-  const { data, selectNode, highlightIds = [], showCheckbox, level = 1, onSelectNode, onCheckNode } = props;
+  const { data, selectNode, highlightIds = [], checkNodes = [], showCheckbox, level = 1, onSelectNode, onCheckNode } = props;
   return <ul className="common-tree" key={'tree'}>
     {
       data.map((node:treeNode) => <TreeNode
         key={node.id} 
         item={node} 
+        checkNodes={checkNodes}
         showCheckbox={showCheckbox}
         selectNode={selectNode} 
         level={level} 

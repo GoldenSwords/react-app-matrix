@@ -8,9 +8,18 @@ import apis from 'src/apis';
 
 export default {
   loadButtons: () => (dispatch: Dispatch<IDispatch>) => {
-    apis.tree.loadJurisdictionButton().then(res => {
-      console.log(res)
+    dispatch({
+      type: ActionTypes.tree.loadData.request,
+    });
+    apis.tree.loadJurisdictionButton().then(payload => {
+      dispatch({
+        type: ActionTypes.tree.loadData.done,
+        payload,
+      });
     }).catch((error: Error) => {
+      dispatch({
+        type: ActionTypes.tree.loadData.error,
+      });
       dispatch({
         type: ActionTypes.common.error,
         error,
@@ -29,35 +38,6 @@ export default {
       type: ActionTypes.system.jurisdiction.request,
       payload: {
         [type]: payload
-      },
-    });
-  },
-  checkTreeNode: (treeNode: treeNode) => (dispatch: Dispatch<IDispatch>, getState: Function) => {
-    const { jurisdiction } = getState();
-    const { tree } = jurisdiction;
-    const checkTree = replaceTree(tree, treeNode);
-    const checkNodes = flatTree(checkTree).filter((node) => node.checked).map((node) => node.id);
-    dispatch({
-      type: ActionTypes.tree.checkNode,
-      payload: {
-        tree: checkTree,
-        checkNodes,
-      },
-    });
-  },
-  selectTreeNode: (selectNode: treeNode) => (dispatch: Dispatch<IDispatch>, getState: Function) => {
-    dispatch({
-      type: ActionTypes.system.jurisdiction.request,
-      payload: {
-        selectNode,
-      },
-    });
-  },
-  selectTreeNodes: (selectNodes: treeNode[]) => (dispatch: Dispatch<IDispatch>, getState: Function) => {
-    dispatch({
-      type: ActionTypes.system.jurisdiction.request,
-      payload: {
-        selectNodes,
       },
     });
   }

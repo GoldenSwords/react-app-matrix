@@ -11,7 +11,10 @@ interface IProps {
 const Checkbox: React.FC<IProps> = (props: IProps) => {
   const { label, checked, disabled, onChange } = props;
   return <div className={classnames('common-checkbox', { disabled })}>
-    <div className={classnames('checkbox', { checked })} onClick={() => onChange(!checked)}></div>
+    <div className={classnames('checkbox', { checked })} onClick={(e) => {
+      e.stopPropagation();
+      onChange(!checked);
+    }}></div>
     <input type="checkbox" checked={checked} readOnly/>
     <div>{ label }</div>
   </div>;

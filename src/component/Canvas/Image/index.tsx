@@ -92,7 +92,6 @@ class CanvasExport extends React.Component<ICanvasProps, ICanvasStates> {
   }
 
   draw = () => {
-    console.log(100)
     const {rotate,scale,offsetX,waterFollow,lv} = this.state;
     this.ctx.clearRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
     this.ctx.beginPath();

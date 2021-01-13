@@ -5,8 +5,8 @@ Mock.mock('/jurisdictionButton','get',{
     code: 0,
     message: 'success',
     payload: [
-      {id: '1', text:'1', disabled: true, checked: true, children:[
-        {id: '2', text:'1-1', disabled: true},
+      {id: '1', text:'1', children:[
+        {id: '2', text:'1-1'},
         {id: '3', text:'1-2'},
         {id: '4', text:'1-3'},
         {id: '5', text:'1-4'}
@@ -25,8 +25,8 @@ Mock.mock('/loadJurisdictionPage','get',{
   code: 0,
   message: 'success',
   payload: [
-    {id: '1', text:'1', disabled: true, checked: true, children:[
-      {id: '2', text:'1-1', disabled: true},
+    {id: '1', text:'1', children:[
+      {id: '2', text:'1-1'},
       {id: '3', text:'1-2'},
       {id: '4', text:'1-3'},
       {id: '5', text:'1-4'}
@@ -45,8 +45,8 @@ Mock.mock('/loadJurisdictionInterface','get',{
   code: 0,
   message: 'success',
   payload: [
-    {id: '1', text:'1', disabled: true, checked: true, children:[
-      {id: '2', text:'1-1', disabled: true},
+    {id: '1', text:'1', children:[
+      {id: '2', text:'1-1'},
       {id: '3', text:'1-2'},
       {id: '4', text:'1-3'},
       {id: '5', text:'1-4'}

@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
-import ActionTypes from 'src/Constant/ActionTypes';
 import jurisdiction from './Jurisdiction';
 import common from './Common';
+import tree from './tree';
 export default combineReducers({
   common,
+  tree,
   jurisdiction,
 });

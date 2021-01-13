@@ -128,7 +128,6 @@ class CanvasExport extends React.Component<ICanvasProps, ICanvasStates> {
     } else {
       this.scale += this.scaleStep;
     }
-    console.log(deltaY, scale)
     const scaleMatrix = MatrixHelper.scale3d(this.scale,this.scale,1);
     this.setState({
       scaleMatrix,

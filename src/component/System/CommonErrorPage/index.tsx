@@ -20,10 +20,6 @@ class CommonErrorBox extends React.Component<IProps, IStates> {
     this.state = {};
   }
 
-  componentDidMount() {
-    console.log(this.props.message)
-  }
-
   setClear = () => {
     setTimeout(() => {
       const { error } = this.props;

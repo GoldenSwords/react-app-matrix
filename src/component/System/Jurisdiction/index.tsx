@@ -6,17 +6,19 @@ import Actions from 'src/Actions';
 import { RootState } from 'src/model';
 import { jurisdictionType } from 'src/model/jurisdiction';
 import { JurisdictionType } from 'src/Constant/jurisdiction';
-
-import './index.scss';
 import Tree from 'src/component/Tree';
 import { treeNode } from 'src/model/tree';
-import { flatTree } from 'src/helper/ImageLoader';
+import { RootState as JurisdictionState } from "src/reducer/Jurisdiction";
+import { RootState as TreeState } from "src/reducer/Tree";
+
+import './index.scss';
 interface IProps {
-  jurisdiction: any;
+  jurisdiction: JurisdictionState;
+  tree: TreeState;
   setJurisdiction(buttons: string[], type: jurisdictionType): void;
-  selectTreeNode(treeNode: treeNode): void;
-  selectTreeNodes(treeNode: treeNode[]): void;
-  onCheckNode(treeNode: treeNode): void;
+  selectTreeNode(treeNode: string): void;
+  selectTreeNodes(treeNodes: string[]): void;
+  onCheckNode(treeNodes: string[]): void;
   loadTree(): void;
   treeType: jurisdictionType;
   treeData: treeNode[];
@@ -38,37 +40,43 @@ class Jurisdiction extends React.Component<IProps, IStates> {
     setJurisdiction(['a', 'b'], JurisdictionType.buttons)
   }
 
-  componentDidUpdate(){
-    console.log(this.props.jurisdiction)
-  }
-
   onSelectNode = (selectNode: treeNode) => {
-    const { jurisdiction, selectTreeNode, selectTreeNodes } = this.props;
-    const { selectNodes } = jurisdiction;
-    // const highlightIds = flatTree(tree).map(node => node.id);
-
-    const selectedNodeIds = selectNodes.map((node: treeNode) => node.id);
-    selectedNodeIds.includes(selectNode.id) && selectNodes.splice(selectNodes.findIndex((node: treeNode) => node.id === selectNode.id), 1);
-    selectTreeNode(selectNodes);
-    selectTreeNodes([...selectNodes, selectNode]);
+    const { tree, selectTreeNode, selectTreeNodes } = this.props;
+    const { selectNodes } = tree;
+    let selected = [...selectNodes];
+    if (selected.includes(selectNode.id)) {
+      selected.splice(selected.findIndex((node: string) => node === selectNode.id), 1);
+    } else {
+      selected.push(selectNode.id);
+    }
+    selectTreeNode(selectNode.id);
+    selectTreeNodes(selected);
   }
 
   onCheckNode = (checkNode: treeNode, checked: boolean) => {
-    const { onCheckNode } = this.props;
+    const { tree, onCheckNode } = this.props;
+    const { checkNodes } = tree;
     checkNode.checked = checked;
-    onCheckNode(checkNode);
+    const checkNodesCopy = [...checkNodes];
+    const index = checkNodesCopy.findIndex(node => node === checkNode.id);
+    if(checked && !checkNodesCopy.includes(checkNode.id)){
+      checkNodesCopy.push(checkNode.id);
+    } else if(index !== -1) {
+      checkNodesCopy.splice(index, 1);
+    }
+    onCheckNode(checkNodesCopy);
   }
 
   render() {
-    const { jurisdiction } = this.props;
-    const { tree, selectNode, selectNodes } = jurisdiction;
-    const highlightIds = selectNodes.map((node: treeNode) => node.id);
+    const { tree } = this.props;
+    const { tree: treeData, selectNodes, selectNode, checkNodes } = tree;
     return (
       <div className="jurisdiction-container">
         <Tree
-          data={tree}
+          data={treeData}
           showCheckbox={true}
-          highlightIds={highlightIds}
+          checkNodes={checkNodes}
+          highlightIds={selectNodes}
           selectNode={selectNode}
           onSelectNode={this.onSelectNode}
           onCheckNode={this.onCheckNode}
@@ -79,7 +87,8 @@ class Jurisdiction extends React.Component<IProps, IStates> {
 }
 
 const mapStateToProps = (state: RootState, ownProps: any) => ({
-  jurisdiction: state.jurisdiction
+  jurisdiction: state.jurisdiction,
+  tree: state.tree,
 });
 const mapDispatchToProps = (dispatch: Function,ownProps: any) => ({
   loadTree: () => {
@@ -88,15 +97,14 @@ const mapDispatchToProps = (dispatch: Function,ownProps: any) => ({
   setJurisdiction: (buttons: string[], type: jurisdictionType ) => {
     dispatch(Actions.Jurisdiction.jurisdictionButton(buttons, type));
   },
-  onCheckNode: (node: treeNode) => {
-    dispatch(Actions.Jurisdiction.checkTreeNode(node));
+  onCheckNode: (nodes: string[]) => {
+    dispatch(Actions.Tree.checkTreeNode(nodes));
   },
-  selectTreeNodes: (treeNode: treeNode[]) => {
-    console.log(treeNode)
-    dispatch(Actions.Jurisdiction.selectTreeNodes(treeNode));
+  selectTreeNodes: (nodes: string[]) => {
+    dispatch(Actions.Tree.selectTreeNodes(nodes));
   },
-  selectTreeNode: (treeNode: treeNode) => {
-    dispatch(Actions.Jurisdiction.selectTreeNode(treeNode));
+  selectTreeNode: (treeNode: string) => {
+    dispatch(Actions.Tree.selectTreeNode(treeNode));
   }
 });
 
