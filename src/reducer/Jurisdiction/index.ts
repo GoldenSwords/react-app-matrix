@@ -24,8 +24,8 @@ const root: RootState = {
   selectNodes: [],
   treeType: JurisdictionType.buttons,
   tree: [
-    {id: '1', text:'1', checked: true, children:[
-      {id: '2', text:'1-1'},
+    {id: '1', text:'1', disabled: true, checked: true, children:[
+      {id: '2', text:'1-1', disabled: true},
       {id: '3', text:'1-2'},
       {id: '4', text:'1-3'},
       {id: '5', text:'1-4'}
@@ -48,11 +48,6 @@ const reducer = function(state:RootState = root, action: Action) {
         ...state,
         ...payload,
       };
-    case ActionTypes.system.tree.request:
-      return {
-        ...state,
-        ...payload,
-      }
     default:
       return state;
   }

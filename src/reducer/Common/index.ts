@@ -3,6 +3,7 @@ import ActionTypes from "src/Constant/ActionTypes";
 interface Action {
   type: string;
   payload: any;
+  error?: Error;
 }
 export interface RootState {
   message?: Error,

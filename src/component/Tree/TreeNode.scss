@@ -18,6 +18,10 @@
     top: 0;
     left: 0;
 
+    &.disabled {
+      pointer-events: none;
+    }
+
     &.highlight {
       background-color: rgba($color: #fff, $alpha: 0.1);
     }

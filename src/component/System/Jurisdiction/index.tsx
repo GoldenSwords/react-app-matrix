@@ -17,6 +17,7 @@ interface IProps {
   selectTreeNode(treeNode: treeNode): void;
   selectTreeNodes(treeNode: treeNode[]): void;
   onCheckNode(treeNode: treeNode): void;
+  loadTree(): void;
   treeType: jurisdictionType;
   treeData: treeNode[];
   selectNode: treeNode;
@@ -32,7 +33,8 @@ class Jurisdiction extends React.Component<IProps, IStates> {
   }
 
   componentDidMount() {
-    const { setJurisdiction } = this.props;
+    const { setJurisdiction, loadTree } = this.props;
+    loadTree();
     setJurisdiction(['a', 'b'], JurisdictionType.buttons)
   }
 
@@ -80,6 +82,9 @@ const mapStateToProps = (state: RootState, ownProps: any) => ({
   jurisdiction: state.jurisdiction
 });
 const mapDispatchToProps = (dispatch: Function,ownProps: any) => ({
+  loadTree: () => {
+    dispatch(Actions.Jurisdiction.loadButtons());
+  },
   setJurisdiction: (buttons: string[], type: jurisdictionType ) => {
     dispatch(Actions.Jurisdiction.jurisdictionButton(buttons, type));
   },

@@ -9,7 +9,12 @@ const AsyncAction = {
 const ActionTypes = createActionTypes({
   system: {
     jurisdiction: AsyncAction,
-    tree: AsyncAction,
+  },
+  tree: {
+    loadData: AsyncAction,
+    selectNodes: ActionType,
+    selectNode: ActionType,
+    checkNodes: ActionType,
   },
   common: {
     error: AsyncAction,

@@ -21,14 +21,14 @@ const TreeNode: React.FC<IProps> = (props: IProps) => {
   return <li className="common-tree-node">
     <div
       onClick={() => onSelectNode(item)} 
-      className={classnames("node-area", {active: selectNode?.id === item.id}, {highlight: highlightIds.includes(item.id)})} 
+      className={classnames("node-area", { disabled: item.disabled }, {active: selectNode?.id === item.id}, {highlight: highlightIds.includes(item.id)})} 
       style={{left: -level * left}}>
       
       <div
         style={{paddingLeft: level * left}}
         className={classnames('node-title')}
       >
-        {showCheckbox && <Checkbox checked={item.checked || false} onChange={(checked: boolean) => onCheckNode(item, checked)}/>}
+        {showCheckbox && <Checkbox disabled={item.disabled} checked={item.checked || false} onChange={(checked: boolean) => onCheckNode(item, checked)}/>}
         {item.text}
       </div>
     </div>
