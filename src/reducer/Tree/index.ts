@@ -25,7 +25,8 @@ const reducer = function(state:RootState = root, action: Action) {
     case ActionTypes.tree.loadData.request: {
       return {
         ...state,
-        tree: []
+        treeDataType: payload,
+        tree: [] as treeNode[],
       };
     }
     case ActionTypes.tree.loadData.done: {

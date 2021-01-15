@@ -10,6 +10,8 @@ import Tree from 'src/component/Tree';
 import { treeNode } from 'src/model/tree';
 import { RootState as JurisdictionState } from "src/reducer/Jurisdiction";
 import { RootState as TreeState } from "src/reducer/Tree";
+import TreeTool from './TreeTool';
+import TreeGrid from 'src/component/TreeGrid';
 
 import './index.scss';
 interface IProps {
@@ -26,12 +28,15 @@ interface IProps {
   selectNodes: treeNode[];
 }
 interface IStates {
+  checkMode: boolean;
 }
 
 class Jurisdiction extends React.Component<IProps, IStates> {
   constructor(props: IProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      checkMode: false,
+    };
   }
 
   componentDidMount() {
@@ -70,16 +75,27 @@ class Jurisdiction extends React.Component<IProps, IStates> {
   render() {
     const { tree } = this.props;
     const { tree: treeData, selectNodes, selectNode, checkNodes } = tree;
+    const { checkMode } = this.state;
     return (
       <div className="jurisdiction-container">
-        <Tree
+        <TreeTool onCheck={() => {
+          this.setState({
+            checkMode: !checkMode
+          });
+        }}/>
+        {/* <Tree
           data={treeData}
-          showCheckbox={true}
+          showCheckbox={checkMode}
           checkNodes={checkNodes}
-          highlightIds={selectNodes}
+          // highlightIds={selectNodes}
           selectNode={selectNode}
           onSelectNode={this.onSelectNode}
           onCheckNode={this.onCheckNode}
+        /> */}
+        <TreeGrid  
+          width={500}
+          columns={[{key:'c.d.e',label: 'a',width: 100}, {key:'c.d.e',label: 'a'}, {key:'c.d.e',label: 'a'}]} 
+          treeData={[{a:1,b:2, c: {d:{e:3}}}]}
         />
       </div>
     );
@@ -92,7 +108,7 @@ const mapStateToProps = (state: RootState, ownProps: any) => ({
 });
 const mapDispatchToProps = (dispatch: Function,ownProps: any) => ({
   loadTree: () => {
-    dispatch(Actions.Jurisdiction.loadButtons());
+    dispatch(Actions.Jurisdiction.loadJurisdiction());
   },
   setJurisdiction: (buttons: string[], type: jurisdictionType ) => {
     dispatch(Actions.Jurisdiction.jurisdictionButton(buttons, type));

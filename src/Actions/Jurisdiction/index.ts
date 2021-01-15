@@ -3,13 +3,14 @@ import { Dispatch, } from "react";
 import ActionTypes from "src/Constant/ActionTypes";
 import { JurisdictionType } from "src/Constant/jurisdiction";
 import { IDispatch, jurisdictionType } from "src/model/jurisdiction";
-import { treeNode } from "src/model/tree";
+import { treeDataType, treeNode } from "src/model/tree";
 import apis from 'src/apis';
 
 export default {
-  loadButtons: () => (dispatch: Dispatch<IDispatch>) => {
+  loadJurisdiction: () => (dispatch: Dispatch<IDispatch>) => {
     dispatch({
       type: ActionTypes.tree.loadData.request,
+      payload: treeDataType.jurisdiction
     });
     apis.tree.loadJurisdictionButton().then(payload => {
       dispatch({
