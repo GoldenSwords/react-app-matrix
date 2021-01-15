@@ -1,0 +1,13 @@
+.common-treegrid-body {
+  &.striple {
+    .common-treegrid-body-row {
+      border-bottom: 1px solid rgba($color: #808080, $alpha: .2);
+    }
+  }
+
+  &.bordered {
+    .common-treegrid-body-row {
+      border: 1px solid rgba($color: #808080, $alpha: .2);
+    }
+  }
+}
