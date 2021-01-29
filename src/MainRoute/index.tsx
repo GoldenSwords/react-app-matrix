@@ -3,6 +3,7 @@ import { HashRouter as Routers, Switch, Route } from 'react-router-dom';
 
 import AppRouter from './AppRouter';
 import SvgRouter from './SvgRouter';
+import CanvasRouter from './CanvasRouter';
 import SystemRoute from './System';
 import CommonErrorPage from 'src/component/System/CommonErrorPage';
 
@@ -18,6 +19,7 @@ const Router: React.FC<IRouterProps> = (props: IRouterProps) => {
       <Switch>
         <Route path="/app" render={() => <AppRouter />} />
         <Route path="/svg" render={() => <SvgRouter />} />
+        <Route path="/canvas" render={() => <CanvasRouter />} />
         <Route path="/system" render={() => <SystemRoute />} />
         {/* <Route component={NotFound} /> */}
       </Switch>
