@@ -1,17 +1,21 @@
 import * as React from 'react';
 import { IImg } from 'src/model/canvas';
 import './index.scss';
+
+export interface IOpt {
+  dom: React.RefObject<HTMLCanvasElement>;
+}
 interface ICanvasProps {
   pages: IImg[];
+  scale: number;
+  hoverPage: string;
   event?: {
-    mouseDown?(e: React.MouseEvent, opt: any): void;
-    mouseMove?(e: MouseEvent, opt: any): void;
-    mouseUp?(e: MouseEvent, opt: any): void;
+    mouseDown?(e: React.MouseEvent, opt: IOpt): void;
+    mouseMove?(e: MouseEvent, opt: IOpt): void;
+    mouseUp?(e: MouseEvent, opt: IOpt): void;
   }
 }
 interface ICanvasStates {
-  scale: number;
-  hoverPage: string;
   selectedPages: string[];
 }
 
@@ -29,8 +33,6 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
   constructor(props: ICanvasProps) {
     super(props);
     this.state = {
-      scale: 0.1,
-      hoverPage: '',
       selectedPages: [],
     };
   }
@@ -41,15 +43,20 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
     this.forwardCanvas.current.height = this.backgroundCanvas.current.height = height;
     this.forwardCtx = this.forwardCanvas.current.getContext('2d');
     this.backgroundCtx = this.backgroundCanvas.current.getContext('2d');
+    
+    this.paintForward();
+    this.paintBackground();
   }
 
   componentDidUpdate(preProps: ICanvasProps, preStates: ICanvasStates) {
-    const { hoverPage, selectedPages, scale } = this.state;
+    const { selectedPages } = this.state;
+    const { hoverPage, scale, pages } = this.props;
 
     this.paintForward();
-    if (hoverPage !== preStates.hoverPage
+    if (hoverPage !== preProps.hoverPage
       || selectedPages !== preStates.selectedPages
-      || scale !== preStates.scale) {
+      || pages !== preProps.pages
+      || scale !== preProps.scale) {
       this.paintBackground();
     }
   }
@@ -61,7 +68,7 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
 
   paintImg = (ctx: CanvasRenderingContext2D, page: IImg) => {
     const { position, source, width, height } = page;
-    const { scale } = this.state;
+    const { scale } = this.props;
     if (source) {
       ctx.drawImage(source, 0, 0, width, height, position.x, position.y, width * scale, height * scale );
     }
@@ -69,7 +76,7 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
 
   paintBorder = (ctx: CanvasRenderingContext2D, page: IImg) => {
     const { position, source, width, height } = page;
-    const { scale } = this.state;
+    const { scale } = this.props;
     if (source) {
       ctx.beginPath();
       ctx.rect(position.x, position.y, width * scale, height * scale );
@@ -80,12 +87,12 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
   }
 
   paintForward = () => {
-    const { pages } = this.props;
-    const { selectedPages, hoverPage } = this.state;
+    const { pages, hoverPage } = this.props;
+    const { selectedPages } = this.state;
     const ctx = this.forwardCtx;
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     pages.forEach((page: IImg) => {
-      if (page && (page._id === hoverPage || !selectedPages.includes(page._id))) {
+      if (page && (page._id === hoverPage || selectedPages.includes(page._id))) {
         this.paintImg(ctx, page);
         this.paintBorder(ctx, page);
       }
@@ -93,8 +100,8 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
   }
   
   paintBackground = () => {
-    const { pages } = this.props;
-    const { selectedPages, hoverPage } = this.state;
+    const { pages, hoverPage } = this.props;
+    const { selectedPages } = this.state;
     const ctx = this.backgroundCtx;
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     pages.forEach((page: IImg) => {
@@ -108,19 +115,25 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
     const { event } = this.props;
     document.removeEventListener('mousemove', this.mouseMove);
     document.removeEventListener('mouseup', this.mouseUp);
-    event && event.mouseUp && event.mouseUp(e, {});
+    event && event.mouseUp && event.mouseUp(e, {
+      dom: this.forwardCanvas
+    });
   }
 
   mouseMove = (e: MouseEvent) => {
     const { event } = this.props;
-    event && event.mouseMove && event.mouseMove(e, {});
+    event && event.mouseMove && event.mouseMove(e, {
+      dom: this.forwardCanvas
+    });
   }
 
   mouseDown = (e: React.MouseEvent) => {
     const { event } = this.props;
     document.addEventListener('mousemove', this.mouseMove);
     document.addEventListener('mouseup', this.mouseUp);
-    event && event.mouseDown && event.mouseDown(e, {});
+    event && event.mouseDown && event.mouseDown(e, {
+      dom: this.forwardCanvas
+    });
   }
 
   render() {

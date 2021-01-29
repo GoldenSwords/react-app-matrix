@@ -14,7 +14,7 @@ const root: RootState = {
   count: 1,
   pages: [
     '1',
-    // '2',
+    '2',
     // '3',
     // '4',
     // '5',
