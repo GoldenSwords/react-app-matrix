@@ -14,7 +14,7 @@ const root: RootState = {
   count: 1,
   pages: [
     '1',
-    '2',
+    // '2',
     // '3',
     // '4',
     // '5',
@@ -28,6 +28,13 @@ const root: RootState = {
 const reducer = function(state:RootState = root, action: Action) {
   const { payload } = action;
   switch(action.type) {
+    case ActionTypes.temp.config: {
+      const { count } = payload;
+      return {
+        ...state,
+        count,
+      }
+    }
     default:
       return state;
   }

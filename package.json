@@ -16,6 +16,8 @@
     "classnames": "^2.2.6",
     "gif.js": "^0.2.0",
     "html-webpack-plugin": "^4.5.0",
+    "loadash": "^1.0.0",
+    "lodash": "^4.17.20",
     "mockjs": "^1.1.0",
     "node-sass": "^4.14.1",
     "react": "^17.0.1",

@@ -4,7 +4,8 @@ import { HashRouter as Routers, Switch, Route } from 'react-router-dom';
 import AppRouter from './AppRouter';
 import SvgRouter from './SvgRouter';
 import CanvasRouter from './CanvasRouter';
-import SystemRoute from './System';
+import SystemRouter from './System';
+import RichRouter from './RichRouter';
 import CommonErrorPage from 'src/component/System/CommonErrorPage';
 
 
@@ -20,7 +21,8 @@ const Router: React.FC<IRouterProps> = (props: IRouterProps) => {
         <Route path="/app" render={() => <AppRouter />} />
         <Route path="/svg" render={() => <SvgRouter />} />
         <Route path="/canvas" render={() => <CanvasRouter />} />
-        <Route path="/system" render={() => <SystemRoute />} />
+        <Route path="/system" render={() => <SystemRouter />} />
+        <Route path="/rich" render={() => <RichRouter />} />
         {/* <Route component={NotFound} /> */}
       </Switch>
     </Routers>

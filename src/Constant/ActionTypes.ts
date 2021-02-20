@@ -18,6 +18,9 @@ const ActionTypes = createActionTypes({
   },
   common: {
     error: AsyncAction,
+  },
+  temp: {
+    config: ActionType,
   }
 });
 
