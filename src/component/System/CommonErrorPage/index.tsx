@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import Actions from 'src/Actions';
 
-import { RootState } from 'src/model';
+import { RootState } from '@models';
 
 import './index.scss';
 interface IProps {

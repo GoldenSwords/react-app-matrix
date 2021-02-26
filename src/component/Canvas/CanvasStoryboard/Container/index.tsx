@@ -1,13 +1,16 @@
 import { scale2d } from '@helper/MatrixHelper';
 import * as React from 'react';
-import { IImg } from 'src/model/canvas';
+import { ICanvasEvent, IImg } from 'src/models/canvas';
 import './index.scss';
 
-export interface IOpt {
-  dom: React.RefObject<HTMLCanvasElement>;
-}
+
 interface ICanvasProps {
   pages: IImg[];
+  offset: {
+    x: number;
+    y: number;
+  };
+  spaceMode: boolean;
   scale: number;
   selectedPages: string[];
   hoverPage: string;
@@ -15,11 +18,7 @@ interface ICanvasProps {
     x: number;
     y: number;
   };
-  event?: {
-    mouseDown?(e: React.MouseEvent, opt: IOpt): void;
-    mouseMove?(e: MouseEvent, opt: IOpt): void;
-    mouseUp?(e: MouseEvent, opt: IOpt): void;
-  }
+  event?: ICanvasEvent;
 }
 interface ICanvasStates {
   tempW: number;
@@ -32,6 +31,7 @@ interface ICanvasStates {
 }
 
 class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
+  positionStr?: string;
   offscreenCanvasForward: OffscreenCanvas;
   offscreenCanvasBackground: OffscreenCanvas;
   offscreenCanvasForwardCtx: OffscreenCanvasRenderingContext2D;
@@ -49,9 +49,11 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
 
   static defaultProps: ICanvasProps = {
     pages: [],
+    spaceMode: false,
     scale: 1,
     selectedPages: [],
     hoverPage: '',
+    offset: { x:0 , y: 0 },
     center: { x:0 , y: 0 },
   };
 
@@ -74,6 +76,8 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('keydown', this.keydown);
+    window.removeEventListener('keyup', this.keyup);
   }
 
 
@@ -82,17 +86,19 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
     const { width, height } = this.backgroundCanvas.current.getBoundingClientRect();
     this.offscreenCanvasForward = new OffscreenCanvas(width, height);
     this.offscreenCanvasBackground = new OffscreenCanvas(width, height);
-    this.forwardCanvas.current.width = this.backgroundCanvas.current.width = width * scale;
-    this.forwardCanvas.current.height = this.backgroundCanvas.current.height = height * scale;
+    this.forwardCanvas.current.width = this.backgroundCanvas.current.width = width;
+    this.forwardCanvas.current.height = this.backgroundCanvas.current.height = height;
     this.forwardCtx = this.forwardCanvas.current.getContext('2d');
     this.backgroundCtx = this.backgroundCanvas.current.getContext('2d');
     this.offscreenCanvasForwardCtx = this.offscreenCanvasForward.getContext('2d');
     this.offscreenCanvasBackgroundCtx = this.offscreenCanvasBackground.getContext('2d');
     window.addEventListener('resize', this.onResize);
+    window.addEventListener('keydown', this.keydown);
+    window.addEventListener('keyup', this.keyup);
     this.setState({
       rootScale: scale,
-      tempH: height * scale,
-      tempW: width * scale,
+      tempH: height,
+      tempW: width,
       rootW: width,
       rootH: height,
       offsetH: 0,
@@ -100,6 +106,7 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
     });
     this.paintForward();
     this.paintBackground();
+
   }
 
   // 100 1 0.9 90
@@ -121,34 +128,13 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
     this.onRestore(this.backgroundCtx);
   }
 
-  onScaleAll = () => {
-    this.onScale(this.forwardCanvas.current, this.forwardCtx);
-    this.onScale(this.backgroundCanvas.current, this.backgroundCtx);
-  }
-
   onRestore = (ctx: CanvasRenderingContext2D) => {
     ctx.restore();
   }
 
-  onScale = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
-    const { scale } = this.props;
-    const { rootW, rootH } = this.state;
-    canvas.width = this.backgroundCanvas.current.width = rootW * scale;
-    canvas.height = this.backgroundCanvas.current.height = rootH * scale;
-    this.translate(ctx);
-  }
-
   componentDidUpdate(preProps: ICanvasProps, preStates: ICanvasStates) {
     const { rootW, rootH, rootScale } = this.state;
-    const { selectedPages, hoverPage, scale, pages } = this.props;
-
-    if (scale !== preProps.scale) {
-      this.setState({
-        offsetH: (window.event as WheelEvent).clientY,
-        offsetW: (window.event as WheelEvent).clientX,
-      })
-    }
-
+    const { selectedPages, hoverPage, scale, pages, offset } = this.props;
     this.paintForward();
     if (hoverPage !== preProps.hoverPage
       || selectedPages !== preProps.selectedPages
@@ -163,35 +149,30 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
     }
   }
 
-  translateCanvas = (ctx: CanvasRenderingContext2D, cb?: Function) => {
-    // ctx.restore();
-    // ctx.save();
-    // ctx.translate();
-    // ctx.restore();
-  }
-
   resetStyle = (ctx: CanvasRenderingContext2D) => {
     ctx.strokeStyle = this.ctxStyle.resetStyle;
     ctx.lineWidth = this.ctxStyle.resetSize;
   }
 
   paintImg = (ctx: CanvasRenderingContext2D, page: IImg) => {
-    const { position, source, width, height } = page;
     const { scale } = this.props;
-    if (source) {
-      this.translateCanvas(ctx);
-      // ctx.drawImage(source, 0, 0, width, height, page.position.x, page.position.y, width * scale, height * scale );
-      ctx.drawImage(source, 0, 0, width, height, page.position.x, page.position.y, width, height);
-    }
+    const { position, scaleOffset, offset, source, width, height } = page;
+    source && ctx.drawImage(
+      source, 0, 0, width, height, 
+      position.x + (offset ? offset.x : 0) + (scaleOffset ? scaleOffset.x : 0), 
+      position.y + (offset ? offset.y : 0) + (scaleOffset ? scaleOffset.y : 0), 
+      width * scale, height * scale);
   }
 
   paintBorder = (ctx: CanvasRenderingContext2D, page: IImg) => {
-    const { position, source, width, height } = page;
+    const { position, scaleOffset, offset, source, width, height } = page;
     const { scale } = this.props;
     if (source) {
       ctx.beginPath();
-      // ctx.rect(position.x, position.y, width * scale, height * scale );
-      ctx.rect(position.x, position.y, width, height);
+      ctx.rect(
+        position.x + (offset ? offset.x : 0) + (scaleOffset ? scaleOffset.x : 0), 
+        position.y + (offset ? offset.y : 0) + (scaleOffset ? scaleOffset.y : 0), 
+        width * scale, height * scale);
       ctx.strokeStyle = this.ctxStyle.strokeStyle;
       ctx.lineWidth = this.ctxStyle.strokeSize;
       ctx.stroke();
@@ -201,29 +182,28 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
   paintForward = () => {
     const { pages, hoverPage, selectedPages } = this.props;
     const ctx = this.forwardCtx;
-    this.onScale(this.forwardCanvas.current, ctx);
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let hover;
     pages.forEach((page: IImg) => {
       if (page && selectedPages.includes(page._id)) {
         this.paintImg(ctx, page);
         this.paintBorder(ctx, page);
       }
-    });
-    pages.forEach((page: IImg) => {
       if (page && page._id === hoverPage) {
-        this.paintImg(ctx, page);
-        this.paintBorder(ctx, page);
+        hover = page;
       }
     });
+    if (hover) {
+      this.paintImg(ctx, hover);
+      this.paintBorder(ctx, hover);
+    }
 
-    this.onRestore(ctx);
   }
   
   paintBackground = () => {
     const { pages, hoverPage, selectedPages } = this.props;
     const ctx = this.backgroundCtx;
-    this.onScale(this.backgroundCanvas.current, ctx);
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     pages.forEach((page: IImg) => {
@@ -232,30 +212,44 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
       }
     });
 
-    this.onRestore(ctx);
   }
 
-  mouseUp = (e: MouseEvent) => {
+  mouseUp = (e: React.MouseEvent) => {
     const { event } = this.props;
-    document.removeEventListener('mousemove', this.mouseMove);
-    document.removeEventListener('mouseup', this.mouseUp);
     event && event.mouseUp && event.mouseUp(e, {
       dom: this.forwardCanvas
     });
   }
 
-  mouseMove = (e: MouseEvent) => {
+  mouseMove = (e: React.MouseEvent) => {
     const { event } = this.props;
-    event && event.mouseMove && event.mouseMove(e, {
-      dom: this.forwardCanvas
-    });
+    if (!this.positionStr) {
+      this.positionStr = `${e.clientX}-${e.clientY}`;
+    } else if (this.positionStr !== `${e.clientX}-${e.clientY}`) {
+      this.positionStr = `${e.clientX}-${e.clientY}`;
+      event && event.mouseMove && event.mouseMove(e, {
+        dom: this.forwardCanvas
+      });
+    }
   }
 
   mouseDown = (e: React.MouseEvent) => {
     const { event } = this.props;
-    document.addEventListener('mousemove', this.mouseMove);
-    document.addEventListener('mouseup', this.mouseUp);
     event && event.mouseDown && event.mouseDown(e, {
+      dom: this.forwardCanvas
+    });
+  }
+
+  keydown = (e: KeyboardEvent) => {
+    const { event } = this.props;
+    event && event.keyDown && event.keyDown(e, {
+      dom: this.forwardCanvas
+    });
+  }
+
+  keyup = (e: KeyboardEvent) => {
+    const { event } = this.props;
+    event && event.keyUp && event.keyUp(e, {
       dom: this.forwardCanvas
     });
   }
@@ -264,7 +258,11 @@ class CanvasContainer extends React.Component<ICanvasProps, ICanvasStates> {
     return (
       <div className="canvas-export-container">
         <canvas ref={this.backgroundCanvas}/>
-        <canvas ref={this.forwardCanvas} onMouseDown={this.mouseDown}/>
+        <canvas ref={this.forwardCanvas} 
+          onMouseDown={this.mouseDown}
+          onMouseMove={this.mouseMove}
+          onMouseUp={this.mouseUp}
+        />
       </div>
     );
   }

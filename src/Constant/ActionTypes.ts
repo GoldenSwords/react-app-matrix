@@ -21,7 +21,10 @@ const ActionTypes = createActionTypes({
   },
   temp: {
     config: ActionType,
-  }
+  },
+  zoom: {
+    setZoom: ActionType,
+  },
 });
 
 export default ActionTypes;

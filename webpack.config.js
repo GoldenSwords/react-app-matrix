@@ -31,6 +31,8 @@ module.exports = {
     alias: {
       src: path.resolve(__dirname, './src'),
       '@': path.resolve(__dirname, './src'),
+      '@helper': path.resolve(__dirname, './src/helper'),
+      '@models': path.resolve(__dirname, './src/models'),
       'gifModule': path.resolve(__dirname, 'node_modules/gif.js/dist'),
       
     },

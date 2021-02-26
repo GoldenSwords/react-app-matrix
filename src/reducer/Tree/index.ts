@@ -1,5 +1,5 @@
 import ActionTypes from "src/Constant/ActionTypes";
-import { treeNode } from "src/model/tree";
+import { treeNode } from "src/models/tree";
 
 interface Action {
   type: string;

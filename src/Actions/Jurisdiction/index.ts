@@ -2,8 +2,8 @@ import { flatTree, replaceTree } from "src/helper/ImageLoader";
 import { Dispatch, } from "react";
 import ActionTypes from "src/Constant/ActionTypes";
 import { JurisdictionType } from "src/Constant/jurisdiction";
-import { IDispatch, jurisdictionType } from "src/model/jurisdiction";
-import { treeDataType, treeNode } from "src/model/tree";
+import { IDispatch, jurisdictionType } from "src/models/jurisdiction";
+import { treeDataType, treeNode } from "src/models/tree";
 import apis from 'src/apis';
 
 export default {

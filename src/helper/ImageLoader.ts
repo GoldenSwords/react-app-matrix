@@ -1,18 +1,24 @@
-import { treeNode } from "src/model/tree";
+import { treeNode } from "src/models/tree";
 import { dataURLToImage, fileOrBlobToDataURL } from "./FileTransfer";
 
-export const loader = (imgOpt: string | File | string[]): Promise<HTMLImageElement | Error | HTMLImageElement[]> => {
+export const loader = (imgOpt: string | File | string[], processCallback?: () => {}): Promise<HTMLImageElement | Error | HTMLImageElement[]> => {
   return new Promise((resolve, reject) => {
     if (!imgOpt) {
       reject(new Error('not a image url'));
     }
     if (typeof imgOpt === 'string') {
-      dataURLToImage(imgOpt).then(resolve).catch(reject);
+      dataURLToImage(imgOpt).then((res) => {
+        processCallback && processCallback();
+        resolve(res);
+      }).catch(reject);
     } else if (imgOpt instanceof Array) {
-      Promise.all(imgOpt.map(img => loader(img))).then((res: HTMLImageElement[]) => resolve(res)).catch(reject);
+      Promise.all(imgOpt.map(img => loader(img, processCallback))).then((res: HTMLImageElement[]) => resolve(res)).catch(reject);
     } else {
       fileOrBlobToDataURL(imgOpt).then((res: string) => {
-        dataURLToImage(res).then(resolve).catch(reject);
+        dataURLToImage(res).then((res) => {
+          processCallback && processCallback();
+          resolve(res);
+        }).catch(reject);
       }).catch(reject);
     }
   });

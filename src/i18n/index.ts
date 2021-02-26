@@ -1,5 +1,5 @@
 import { LANG } from 'src/helper/envHelper';
-import { ILanguageNode } from 'src/model/i18n';
+import { ILanguageNode } from 'src/models/i18n';
 import zhCn from './zh-cn';
 
 const languages: {

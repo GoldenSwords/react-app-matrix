@@ -2,7 +2,7 @@ import { ImageLoader } from '@/helper';
 import * as React from 'react';
 import {connect} from 'react-redux';
 import Actions from 'src/Actions';
-import { RootState } from 'src/model';
+import { RootState } from '@models';
 import './index.scss';
 interface ICanvasProps {
   page: string;

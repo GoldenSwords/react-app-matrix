@@ -107,7 +107,7 @@ export const imageToDataURL = (src: string) => {
   });
 }
 // dataURL转image，这个不需要转，直接给了src就能用
-export const dataURLToImage = (dataUrl: string) => {
+export const dataURLToImage = (dataUrl: string): Promise<HTMLImageElement | Error> => {
   return new Promise((resolve, reject) => {
     var img = new Image();
     img.onload = () => resolve(img);

@@ -1,5 +1,5 @@
 import ActionTypes from "src/Constant/ActionTypes";
-import { treeNode } from "src/model/tree";
+import { treeNode } from "src/models/tree";
 
 interface Action {
   type: string;
@@ -13,7 +13,7 @@ export interface RootState {
 const root: RootState = {
   count: 1,
   pages: [
-    '1',
+    '10',
     // '2',
     // '3',
     // '4',

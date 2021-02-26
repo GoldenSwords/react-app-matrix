@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { I_TOOL_BAR, I_TRIGGER_TYPE } from 'src/model/rich';
+import { I_TOOL_BAR, I_TRIGGER_TYPE } from 'src/models/rich';
 import { RichHelper } from 'src/helper';
 import './index.scss';
 import RichProvider from '../../RichProvider';

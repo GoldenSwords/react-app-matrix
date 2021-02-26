@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classnames from 'classnames';
-import { treeNode } from 'src/model/tree';
+import { treeNode } from 'src/models/tree';
 import Tree from '.';
 
 import './TreeNode.scss';

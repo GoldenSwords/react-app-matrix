@@ -3,11 +3,11 @@ import * as React from 'react';
 
 import Actions from 'src/Actions';
 
-import { RootState } from 'src/model';
-import { jurisdictionType } from 'src/model/jurisdiction';
+import { RootState } from '@models';
+import { jurisdictionType } from 'src/models/jurisdiction';
 import { JurisdictionType } from 'src/Constant/jurisdiction';
 import Tree from 'src/component/Tree';
-import { treeNode } from 'src/model/tree';
+import { treeNode } from 'src/models/tree';
 import { RootState as JurisdictionState } from "src/reducer/Jurisdiction";
 import { RootState as TreeState } from "src/reducer/Tree";
 import TreeTool from './TreeTool';

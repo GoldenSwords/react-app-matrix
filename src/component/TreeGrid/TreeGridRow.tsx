@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classnames from 'classnames';
-import { ITreeColumn } from 'src/model/treeGrid';
+import { ITreeColumn } from 'src/models/treeGrid';
 import TreeGridCol from './TreeGridCol';
 
 import './TreeGridRow.scss';

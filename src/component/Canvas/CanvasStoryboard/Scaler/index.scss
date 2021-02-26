@@ -1,0 +1,51 @@
+.scale-root {
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 11;
+
+  .scale-root-content {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    line-height: 40px;
+    width: fit-content;
+
+    input {
+      height: 22px;
+      width: 40px;
+      margin: 0 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background-color: transparent;
+      border: 0;
+      outline: 0;
+      color: #fff;
+    }
+  
+    .circle {
+      border-radius: 100%;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  
+      &.subtraction {
+        background-color: rgb(27, 190, 10);
+        color: #fff;
+      }
+  
+      &.add {
+        background-color: rgb(248, 175, 29);
+        color: #fff;
+      }
+    }
+  }
+
+  
+  
+}

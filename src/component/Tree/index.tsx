@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { treeNode } from 'src/model/tree';
+import { treeNode } from 'src/models/tree';
 import TreeNode from './TreeNode';
 
 import './index.scss';

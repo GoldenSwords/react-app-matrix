@@ -1,7 +1,7 @@
 import ActionTypes from "src/Constant/ActionTypes";
 import { JurisdictionType } from "src/Constant/jurisdiction";
-import { jurisdictionType } from "src/model/jurisdiction";
-import { treeNode } from "src/model/tree";
+import { jurisdictionType } from "src/models/jurisdiction";
+import { treeNode } from "src/models/tree";
 
 interface Action {
   type: string;
